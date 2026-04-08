@@ -1,3 +1,20 @@
 spring:
-  application:
-    name: demo
+  datasource:
+    # 1. 포트번호(3306)와 DB 이름(demo)을 확인하세요.
+    # MySQL Workbench에서 미리 'demo'라는 스키마(DB)를 만들어둬야 합니다!
+    url: jdbc:mysql://localhost:3306/demo?serverTimezone=Asia/Seoul
+    # 2. 본인의 MySQL 아이디 (보통 root)
+    username: root
+    # 3. 본인의 MySQL 설치 시 설정한 비밀번호
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      # 이 옵션이 있어야 나경님이 만든 Entity를 보고 테이블을 자동으로 만듭니다.
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
