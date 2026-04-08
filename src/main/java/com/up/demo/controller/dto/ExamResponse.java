@@ -12,6 +12,8 @@ public class ExamResponse {
     private Long id;
     private String subject;
     private LocalDate examDate;
+    private Integer difficulty;
+    private Integer understanding;
     private Long userId;
 
     public static ExamResponse from(Exam exam) {
@@ -19,6 +21,8 @@ public class ExamResponse {
                 exam.getId(),
                 exam.getSubject(),
                 exam.getExamDate(),
+                exam.getDifficulty(),
+                exam.getUnderstanding(),
                 exam.getUser() == null ? null : exam.getUser().getId()
         );
     }

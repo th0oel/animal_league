@@ -27,7 +27,7 @@ public class CalendarController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<CalendarResponse>> getCalendar() {
-        Calendar calendar = calendarService.getMyCalendar();
-        return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK.value(), "캘린더 조회 성공", CalendarResponse.from(calendar)));
+        CalendarResponse data = calendarService.getMyCalendar();
+        return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK.value(), "캘린더 조회 성공", data));
     }
 }

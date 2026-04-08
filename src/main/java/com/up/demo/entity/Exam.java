@@ -18,6 +18,12 @@ public class Exam extends BaseEntity {
     private String subject;
     private LocalDate examDate;
 
+    @Column(nullable = false)
+    private Integer difficulty;
+
+    @Column(nullable = false)
+    private Integer understanding;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

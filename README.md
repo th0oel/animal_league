@@ -188,7 +188,18 @@ Response (200)
   "data": {
     "id": 1,
     "calendarName": "My Calendar",
-    "userId": 1
+    "userId": 1,
+    "schedules": [
+      {
+        "date": "2026-04-09",
+        "subjects": [
+          {
+            "subject": "Math",
+            "priority": 1
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -218,7 +229,9 @@ Request
 ```json
 {
   "subject": "Math",
-  "examDate": "2026-05-10"
+  "examDate": "2026-05-10",
+  "difficulty": 8,
+  "understanding": 2
 }
 ```
 
@@ -232,6 +245,8 @@ Response (201)
     "id": 1,
     "subject": "Math",
     "examDate": "2026-05-10",
+    "difficulty": 8,
+    "understanding": 2,
     "userId": 1
   }
 }
@@ -242,7 +257,7 @@ Response (400)
 ```json
 {
   "status": 400,
-  "message": "subject, examDate는 필수입니다."
+  "message": "subject, examDate, difficulty, understanding은 필수입니다."
 }
 ```
 
@@ -261,9 +276,54 @@ Response (200)
       "id": 1,
       "subject": "Math",
       "examDate": "2026-05-10",
+      "difficulty": 8,
+      "understanding": 2,
       "userId": 1
     }
   ]
+}
+```
+
+---
+
+### 6.4 Calendar 조회 학습 일정 생성 규칙
+
+- `GET /api/v1/calendars`는 현재 사용자의 시험 목록(`difficulty`, `understanding`, `examDate`)을 이용해 우선순위를 계산합니다.
+- 우선순위 점수는 **난이도(높을수록 우선)**, **이해도(낮을수록 우선)**, **시험일이 가까울수록 우선** 기준으로 계산됩니다.
+- 우선순위 순서대로 `priority`를 부여합니다. (`1`이 가장 중요)
+- 오늘부터 각 시험 `examDate`까지 학습 과목을 배치합니다.
+- 생성된 학습 기간이 30일보다 짧으면, 앞/뒤에 빈 날짜를 최대한 균등하게 채워 총 30일을 반환합니다.
+
+Response (200 예시)
+
+```json
+{
+  "status": 200,
+  "message": "캘린더 조회 성공",
+  "data": {
+    "id": 1,
+    "calendarName": "My Calendar",
+    "userId": 1,
+    "schedules": [
+      {
+        "date": "2026-04-08",
+        "subjects": []
+      },
+      {
+        "date": "2026-04-09",
+        "subjects": [
+          {
+            "subject": "Math",
+            "priority": 1
+          },
+          {
+            "subject": "English",
+            "priority": 2
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 

@@ -24,6 +24,8 @@ public class ExamController {
         Exam exam = new Exam();
         exam.setSubject(request.getSubject());
         exam.setExamDate(request.getExamDate());
+        exam.setDifficulty(request.getDifficulty());
+        exam.setUnderstanding(request.getUnderstanding());
 
         Exam savedExam = examService.createExam(exam);
         return ResponseEntity.status(HttpStatus.CREATED)

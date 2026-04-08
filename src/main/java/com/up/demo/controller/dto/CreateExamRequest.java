@@ -12,4 +12,6 @@ import java.time.LocalDate;
 public class CreateExamRequest {
     private String subject;
     private LocalDate examDate;
+    private Integer difficulty;
+    private Integer understanding;
 }
