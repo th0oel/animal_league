@@ -1,31 +1,33 @@
 package com.up.demo.controller;
 
+import com.up.demo.controller.dto.ApiResponse;
+import com.up.demo.controller.dto.CalendarResponse;
+import com.up.demo.controller.dto.CreateCalendarRequest;
 import com.up.demo.entity.Calendar;
 import com.up.demo.service.CalendarService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/calendars")
+@RequestMapping("/api/v1/calendars")
 @RequiredArgsConstructor
 public class CalendarController {
 
     private final CalendarService calendarService;
 
-    // 특정 유저의 캘린더 생성 (POST /api/calendars/1?name=MyCalendar)
-    @PostMapping("/{userId}")
-    public ResponseEntity<Calendar> createCalendar(
-            @PathVariable Long userId,
-            @RequestParam String name) {
-        Calendar calendar = calendarService.createCalendar(userId, name);
-        return ResponseEntity.ok(calendar);
+    @PostMapping
+    public ResponseEntity<ApiResponse<CalendarResponse>> createCalendar(
+            @RequestBody CreateCalendarRequest request) {
+        Calendar calendar = calendarService.createCalendar(request.getCalendarName());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.of(HttpStatus.CREATED.value(), "캘린더가 생성되었습니다.", CalendarResponse.from(calendar)));
     }
 
-    // 특정 유저의 캘린더 조회 (GET /api/calendars/user/1)
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Calendar> getCalendar(@PathVariable Long userId) {
-        Calendar calendar = calendarService.getCalendarByUserId(userId);
-        return ResponseEntity.ok(calendar);
+    @GetMapping
+    public ResponseEntity<ApiResponse<CalendarResponse>> getCalendar() {
+        Calendar calendar = calendarService.getMyCalendar();
+        return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK.value(), "캘린더 조회 성공", CalendarResponse.from(calendar)));
     }
 }

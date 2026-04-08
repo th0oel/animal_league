@@ -3,35 +3,44 @@ package com.up.demo.service;
 import com.up.demo.entity.Calendar;
 import com.up.demo.entity.User;
 import com.up.demo.repository.CalendarRepository;
-import com.up.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class CalendarService {
 
     private final CalendarRepository calendarRepository;
-    private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;
 
-    // 특정 유저에게 캘린더 생성/연결하기
     @Transactional
-    public Calendar createCalendar(Long userId, String calendarName) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+    public Calendar createCalendar(String calendarName) {
+        if (calendarName == null || calendarName.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "calendarName은 필수입니다.");
+        }
+
+        User user = currentUserService.getCurrentUser();
+        Long userId = user.getId();
+
+        if (calendarRepository.findByUserId(userId).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당 유저의 캘린더가 이미 존재합니다.");
+        }
 
         Calendar calendar = new Calendar();
-        calendar.setCalendarName(calendarName);
+        calendar.setCalendarName(calendarName.trim());
         calendar.setUser(user); // 유저와 1:1 연결
 
         return calendarRepository.save(calendar);
     }
 
-    // 유저 ID로 캘린더 정보 가져오기
     @Transactional(readOnly = true)
-    public Calendar getCalendarByUserId(Long userId) {
+    public Calendar getMyCalendar() {
+        Long userId = currentUserService.getCurrentUserId();
+
         return calendarRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("해당 유저의 캘린더가 존재하지 않습니다."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 유저의 캘린더가 존재하지 않습니다."));
     }
 }

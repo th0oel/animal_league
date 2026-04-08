@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '4.0.5'
+    id 'org.springframework.boot' version '3.5.0'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -18,20 +18,27 @@ repositories {
     mavenCentral()
 }
 
+configurations.configureEach {
+    resolutionStrategy.force 'org.apache.commons:commons-lang3:3.18.0'
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation('org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13') {
+        exclude group: 'org.apache.commons', module: 'commons-lang3'
+    }
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.7'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.7'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.7'
-    implementation 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.mysql:mysql-connector-j'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testAnnotationProcessor 'org.projectlombok:lombok'

@@ -22,25 +22,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<Void>> register(@RequestBody RegisterRequest request) {
-        try {
-            authService.register(request);
-            return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK.value(), "회원가입이 완료되었습니다."));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(ApiResponse.of(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
-        }
+        authService.register(request);
+        return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK.value(), "회원가입이 완료되었습니다."));
     }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginData>> login(@RequestBody LoginRequest request) {
-        try {
-            String token = authService.login(request);
-            return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK.value(), "로그인 성공", new LoginData(token)));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(ApiResponse.of(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null));
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.of(HttpStatus.UNAUTHORIZED.value(), e.getMessage(), null));
-        }
+        String token = authService.login(request);
+        return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK.value(), "로그인 성공", new LoginData(token)));
     }
 }
-
