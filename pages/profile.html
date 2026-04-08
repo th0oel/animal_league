@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="light" lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>프로필 | Utopia Planner</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+          rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+          rel="stylesheet"/>
+    <link href="../assets/css/custom.css" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#4355b9",
+                        navy: "#00113a",
+                        canvas: "#f6fafe"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Public Sans", "sans-serif"],
+                        "body": ["Public Sans", "sans-serif"],
+                        "label": ["Public Sans", "sans-serif"],
+                        "manrope": ["Manrope", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-[#f6fafe] font-body text-[#00113a] antialiased">
+<header class="bg-[#f6fafe]/70 dark:bg-[#00113a]/70 backdrop-blur-xl fixed top-0 z-50 w-full border-b border-[#e4e9ed] border-opacity-20">
+    <div class="flex justify-between items-center w-full px-8 py-4 max-w-[1440px] mx-auto">
+        <div class="flex items-center">
+            <a href="../index.html" class="text-xl font-bold text-[#00113a] dark:text-[#f6fafe] uppercase tracking-widest font-manrope">Utopia Planner</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="window.location.href='./study-plan-wizard.html'"
+                    class="bg-[#4355b9] text-white px-5 py-2 rounded-lg font-bold scale-95 active:opacity-80 transition-all">
+                과목 추가
+            </button>
+            <button onclick="logoutUser()"
+                    class="px-4 py-2 text-sm bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition">로그아웃
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="pt-24 p-8 min-h-screen">
+    <div class="max-w-[1440px] mx-auto">
+        <div class="mb-12">
+            <h1 class="font-manrope tracking-tighter text-4xl font-bold">프로필</h1>
+            <p class="text-[#00113a]/60 mt-2">사용자 정보 및 학습 현황</p>
+        </div>
+
+        <div class="grid grid-cols-12 gap-8">
+            <!-- 프로필 카드 -->
+            <div class="col-span-12 lg:col-span-4">
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed] p-8 text-center">
+                    <div class="w-24 h-24 rounded-full bg-[#4355b9]/10 flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-6xl text-[#4355b9]">person</span>
+                    </div>
+                    <h2 id="user-email" class="text-2xl font-bold text-[#00113a] mb-2">사용자</h2>
+                    <p class="text-[#00113a]/60 text-sm mb-6">Utopia Planner 사용자</p>
+
+                    <div class="space-y-3">
+                        <button onclick="logoutUser()"
+                                class="w-full px-4 py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition">
+                            로그아웃
+                        </button>
+                        <button onclick="window.location.href='../index.html'"
+                                class="w-full px-4 py-3 border border-[#e4e9ed] text-[#00113a] rounded-lg font-bold hover:bg-[#f6fafe] transition">
+                            홈으로
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 통계 카드 -->
+            <div class="col-span-12 lg:col-span-8">
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed] p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-[#00113a]/60 text-sm font-bold">총 시험 과목</p>
+                                <p id="total-exams" class="text-4xl font-bold text-[#4355b9] mt-2">0</p>
+                            </div>
+                            <span class="material-symbols-outlined text-5xl text-[#4355b9]/20">school</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed] p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-[#00113a]/60 text-sm font-bold">평균 난이도</p>
+                                <p id="avg-difficulty" class="text-4xl font-bold text-[#4355b9] mt-2">0</p>
+                            </div>
+                            <span class="material-symbols-outlined text-5xl text-[#4355b9]/20">trending_up</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed] p-6">
+                    <h3 class="font-bold text-lg text-[#00113a] mb-4">최근 추가된 시험</h3>
+                    <div id="recent-exams" class="space-y-3">
+                        <p class="text-[#00113a]/60 text-center py-8">시험 일정이 없습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Bottom Navigation for Mobile (Hidden on Desktop) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-[#e4e9ed] px-4 py-3 z-50 flex justify-around items-center shadow-[0_-4px_20px_rgba(0,17,58,0.05)]">
+    <a class="flex flex-col items-center gap-1 text-[#00113a]/40" href="./study-plan-wizard.html">
+        <span class="material-symbols-outlined">timer</span>
+        <span class="text-[10px]">Plan</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-[#00113a]/40" href="./calendar.html">
+        <span class="material-symbols-outlined">calendar_month</span>
+        <span class="text-[10px]">Calendar</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-[#00113a]/40" href="./stats.html">
+        <span class="material-symbols-outlined">analytics</span>
+        <span class="text-[10px]">Stats</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-[#4355b9] font-bold" href="./profile.html">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+        <span class="text-[10px]">Profile</span>
+    </a>
+</nav>
+
+<script src="../assets/js/main.js"></script>
+<script>
+    /**
+     * 프로필 페이지 초기화
+     */
+    document.addEventListener('DOMContentLoaded', async function () {
+        // 로그인 확인
+        requireLogin();
+
+        // 사용자 정보 표시
+        const userInfo = getUserInfo();
+        if (userInfo) {
+            document.getElementById('user-email').textContent = userInfo.email.split('@')[0];
+        }
+
+        // 시험 목록 조회 및 통계 계산
+        await loadProfileData();
+    });
+
+    /**
+     * 프로필 데이터 로드
+     */
+    async function loadProfileData() {
+        try {
+            const response = await getExams();
+            const exams = response.data || [];
+
+            // 총 시험 과목
+            document.getElementById('total-exams').textContent = exams.length;
+
+            // 평균 난이도
+            if (exams.length > 0) {
+                const avgDifficulty = Math.round(
+                    exams.reduce((sum, exam) => sum + exam.difficulty, 0) / exams.length
+                );
+                document.getElementById('avg-difficulty').textContent = avgDifficulty;
+            }
+
+            // 최근 추가된 시험
+            const recentExamsEl = document.getElementById('recent-exams');
+            if (exams.length > 0) {
+                recentExamsEl.innerHTML = exams.slice(0, 5).map(exam => `
+        <div class="p-4 rounded-lg bg-[#f6fafe] border border-[#e4e9ed] flex items-center justify-between">
+          <div>
+            <p class="font-bold text-[#00113a]">${exam.subject}</p>
+            <p class="text-sm text-[#00113a]/60">난이도: ${exam.difficulty} | 이해도: ${getUnderstandingText(exam.understanding)}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm font-bold text-[#4355b9]">${exam.examDate}</p>
+          </div>
+        </div>
+      `).join('');
+            }
+        } catch (error) {
+            console.error('프로필 데이터 로드 실패:', error);
+        }
+    }
+</script>
+</body>
+</html>

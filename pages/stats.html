@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html class="light" lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>통계 | Utopia Planner</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <link href="../assets/css/custom.css" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#4355b9",
+            navy: "#00113a",
+            canvas: "#f6fafe"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Public Sans", "sans-serif"],
+            "body": ["Public Sans", "sans-serif"],
+            "label": ["Public Sans", "sans-serif"],
+            "manrope": ["Manrope", "sans-serif"]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-[#f6fafe] font-body text-[#00113a] antialiased">
+<header class="bg-[#f6fafe]/70 dark:bg-[#00113a]/70 backdrop-blur-xl fixed top-0 z-50 w-full border-b border-[#e4e9ed] border-opacity-20">
+  <div class="flex justify-between items-center w-full px-8 py-4 max-w-[1440px] mx-auto">
+    <div class="flex items-center">
+      <a href="../index.html" class="text-xl font-bold text-[#00113a] dark:text-[#f6fafe] uppercase tracking-widest font-manrope">Utopia Planner</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <button onclick="window.location.href='./study-plan-wizard.html'" class="bg-[#4355b9] text-white px-5 py-2 rounded-lg font-bold scale-95 active:opacity-80 transition-all">과목 추가</button>
+      <button onclick="logoutUser()" class="px-4 py-2 text-sm bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition">로그아웃</button>
+    </div>
+  </div>
+</header>
+
+<main class="pt-24 p-8 min-h-screen">
+  <div class="max-w-[1440px] mx-auto">
+    <div class="mb-12">
+      <h1 class="font-manrope tracking-tighter text-4xl font-bold">학습 데이터 분석</h1>
+      <p class="text-[#00113a]/60 mt-2">입력된 정보를 바탕으로 학습 현황을 확인합니다</p>
+    </div>
+
+    <!-- 주요 통계 -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed] p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[#00113a]/60 text-sm font-bold">총 과목</p>
+            <p id="stat-total-subjects" class="text-3xl font-bold text-[#4355b9] mt-2">0</p>
+          </div>
+          <span class="material-symbols-outlined text-4xl text-[#4355b9]/20">subject</span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed] p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[#00113a]/60 text-sm font-bold">높은 난이도</p>
+            <p id="stat-high-difficulty" class="text-3xl font-bold text-red-600 mt-2">0</p>
+          </div>
+          <span class="material-symbols-outlined text-4xl text-red-200">trending_up</span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed] p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[#00113a]/60 text-sm font-bold">낮은 이해도</p>
+            <p id="stat-low-understanding" class="text-3xl font-bold text-orange-600 mt-2">0</p>
+          </div>
+          <span class="material-symbols-outlined text-4xl text-orange-200">school</span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed] p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[#00113a]/60 text-sm font-bold">완료율</p>
+            <p id="stat-completion" class="text-3xl font-bold text-green-600 mt-2">0%</p>
+          </div>
+          <span class="material-symbols-outlined text-4xl text-green-200">check_circle</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상세 분석 -->
+    <div class="grid grid-cols-12 gap-8">
+      <!-- 난이도별 분석 -->
+      <div class="col-span-12 lg:col-span-6">
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed] p-6">
+          <h3 class="font-bold text-lg text-[#00113a] mb-4">난이도별 과목</h3>
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between mb-2">
+                <p class="text-sm font-semibold text-[#00113a]">낮음 (1-3)</p>
+                <p id="diff-low-count" class="text-sm font-bold text-[#4355b9]">0</p>
+              </div>
+              <div class="w-full bg-slate-200 rounded-full h-2">
+                <div id="diff-low-bar" class="bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-2">
+                <p class="text-sm font-semibold text-[#00113a]">중간 (4-6)</p>
+                <p id="diff-mid-count" class="text-sm font-bold text-[#4355b9]">0</p>
+              </div>
+              <div class="w-full bg-slate-200 rounded-full h-2">
+                <div id="diff-mid-bar" class="bg-yellow-500 h-2 rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-2">
+                <p class="text-sm font-semibold text-[#00113a]">높음 (7-10)</p>
+                <p id="diff-high-count" class="text-sm font-bold text-[#4355b9]">0</p>
+              </div>
+              <div class="w-full bg-slate-200 rounded-full h-2">
+                <div id="diff-high-bar" class="bg-red-500 h-2 rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 이해도별 분석 -->
+      <div class="col-span-12 lg:col-span-6">
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed] p-6">
+          <h3 class="font-bold text-lg text-[#00113a] mb-4">이해도별 과목</h3>
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between mb-2">
+                <p class="text-sm font-semibold text-[#00113a]">입문자 (1)</p>
+                <p id="under-1-count" class="text-sm font-bold text-[#4355b9]">0</p>
+              </div>
+              <div class="w-full bg-slate-200 rounded-full h-2">
+                <div id="under-1-bar" class="bg-red-500 h-2 rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-2">
+                <p class="text-sm font-semibold text-[#00113a]">기초 수준 (2)</p>
+                <p id="under-2-count" class="text-sm font-bold text-[#4355b9]">0</p>
+              </div>
+              <div class="w-full bg-slate-200 rounded-full h-2">
+                <div id="under-2-bar" class="bg-orange-500 h-2 rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-2">
+                <p class="text-sm font-semibold text-[#00113a]">심화 학습중 (3)</p>
+                <p id="under-3-count" class="text-sm font-bold text-[#4355b9]">0</p>
+              </div>
+              <div class="w-full bg-slate-200 rounded-full h-2">
+                <div id="under-3-bar" class="bg-green-500 h-2 rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 모든 과목 목록 -->
+      <div class="col-span-12">
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed] p-6">
+          <h3 class="font-bold text-lg text-[#00113a] mb-4">모든 시험 과목</h3>
+          <div id="all-exams-table" class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-[#e4e9ed]">
+                  <th class="text-left py-3 px-4 font-bold text-[#00113a] text-sm">과목</th>
+                  <th class="text-left py-3 px-4 font-bold text-[#00113a] text-sm">시험일</th>
+                  <th class="text-left py-3 px-4 font-bold text-[#00113a] text-sm">난이도</th>
+                  <th class="text-left py-3 px-4 font-bold text-[#00113a] text-sm">이해도</th>
+                </tr>
+              </thead>
+              <tbody id="exams-tbody">
+                <tr>
+                  <td class="py-8 px-4 text-center text-[#00113a]/60 col-span-4">시험 과목이 없습니다.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Bottom Navigation for Mobile (Hidden on Desktop) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-[#e4e9ed] px-4 py-3 z-50 flex justify-around items-center shadow-[0_-4px_20px_rgba(0,17,58,0.05)]">
+  <a class="flex flex-col items-center gap-1 text-[#00113a]/40" href="./study-plan-wizard.html">
+    <span class="material-symbols-outlined">timer</span>
+    <span class="text-[10px]">Plan</span>
+  </a>
+  <a class="flex flex-col items-center gap-1 text-[#00113a]/40" href="./calendar.html">
+    <span class="material-symbols-outlined">calendar_month</span>
+    <span class="text-[10px]">Calendar</span>
+  </a>
+  <a class="flex flex-col items-center gap-1 text-[#4355b9] font-bold" href="./stats.html">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+    <span class="text-[10px]">Stats</span>
+  </a>
+  <a class="flex flex-col items-center gap-1 text-[#00113a]/40" href="./profile.html">
+    <span class="material-symbols-outlined">person</span>
+    <span class="text-[10px]">Profile</span>
+  </a>
+</nav>
+
+<script src="../assets/js/main.js"></script>
+<script>
+/**
+ * 통계 페이지 초기화
+ */
+document.addEventListener('DOMContentLoaded', async function() {
+  // 로그인 확인
+  requireLogin();
+
+  // 통계 데이터 로드
+  await loadStatsData();
+});
+
+/**
+ * 통계 데이터 로드
+ */
+async function loadStatsData() {
+  try {
+    const response = await getExams();
+    const exams = response.data || [];
+
+    if (exams.length === 0) {
+      document.getElementById('all-exams-table').innerHTML = '<p class="text-center py-8 text-[#00113a]/60">시험 과목이 없습니다.</p>';
+      return;
+    }
+
+    // 기본 통계
+    document.getElementById('stat-total-subjects').textContent = exams.length;
+
+    // 난이도 분석
+    const highDiffCount = exams.filter(e => e.difficulty >= 7).length;
+    document.getElementById('stat-high-difficulty').textContent = highDiffCount;
+
+    // 낮은 이해도 분석
+    const lowUnderstandingCount = exams.filter(e => e.understanding === 1).length;
+    document.getElementById('stat-low-understanding').textContent = lowUnderstandingCount;
+
+    // 완료율 (임시: 0%)
+    document.getElementById('stat-completion').textContent = '0%';
+
+    // 난이도별 분석
+    const diffLowCount = exams.filter(e => e.difficulty <= 3).length;
+    const diffMidCount = exams.filter(e => e.difficulty >= 4 && e.difficulty <= 6).length;
+    const diffHighCount = exams.filter(e => e.difficulty >= 7).length;
+
+    document.getElementById('diff-low-count').textContent = diffLowCount;
+    document.getElementById('diff-mid-count').textContent = diffMidCount;
+    document.getElementById('diff-high-count').textContent = diffHighCount;
+
+    const maxDiff = Math.max(diffLowCount, diffMidCount, diffHighCount);
+    document.getElementById('diff-low-bar').style.width = (diffLowCount / maxDiff * 100) + '%';
+    document.getElementById('diff-mid-bar').style.width = (diffMidCount / maxDiff * 100) + '%';
+    document.getElementById('diff-high-bar').style.width = (diffHighCount / maxDiff * 100) + '%';
+
+    // 이해도별 분석
+    const under1Count = exams.filter(e => e.understanding === 1).length;
+    const under2Count = exams.filter(e => e.understanding === 2).length;
+    const under3Count = exams.filter(e => e.understanding === 3).length;
+
+    document.getElementById('under-1-count').textContent = under1Count;
+    document.getElementById('under-2-count').textContent = under2Count;
+    document.getElementById('under-3-count').textContent = under3Count;
+
+    const maxUnder = Math.max(under1Count, under2Count, under3Count);
+    document.getElementById('under-1-bar').style.width = (under1Count / maxUnder * 100) + '%';
+    document.getElementById('under-2-bar').style.width = (under2Count / maxUnder * 100) + '%';
+    document.getElementById('under-3-bar').style.width = (under3Count / maxUnder * 100) + '%';
+
+    // 테이블 생성
+    const tbody = document.getElementById('exams-tbody');
+    tbody.innerHTML = exams.map(exam => `
+      <tr class="border-b border-[#e4e9ed] hover:bg-[#f6fafe] transition">
+        <td class="py-3 px-4 font-semibold text-[#00113a]">${exam.subject}</td>
+        <td class="py-3 px-4 text-[#00113a]/60">${exam.examDate}</td>
+        <td class="py-3 px-4">
+          <span class="px-3 py-1 rounded-full text-xs font-bold ${exam.difficulty <= 3 ? 'bg-blue-100 text-blue-800' : exam.difficulty <= 6 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}">
+            ${exam.difficulty}
+          </span>
+        </td>
+        <td class="py-3 px-4 text-[#00113a]/60">${getUnderstandingText(exam.understanding)}</td>
+      </tr>
+    `).join('');
+
+  } catch (error) {
+    console.error('통계 데이터 로드 실패:', error);
+  }
+}
+</script>
+</body>
+</html>
