@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html class="light" lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>보이드 캘린더 | Utopia Planner</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <link href="../assets/css/custom.css" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#4355b9",
+            navy: "#00113a",
+            canvas: "#f6fafe"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Public Sans", "sans-serif"],
+            "body": ["Public Sans", "sans-serif"],
+            "label": ["Public Sans", "sans-serif"],
+            "manrope": ["Manrope", "sans-serif"]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+  </style>
+</head>
+<body class="bg-[#f6fafe] font-body text-[#00113a] antialiased">
+<header class="bg-[#f6fafe]/70 dark:bg-[#00113a]/70 backdrop-blur-xl docked full-width top-0 z-50 fixed border-b border-[#e4e9ed] border-opacity-20">
+  <div class="flex justify-between items-center w-full px-8 py-4 max-w-[1440px] mx-auto">
+    <div class="flex items-center">
+      <a href="../index.html" class="text-xl font-bold text-[#00113a] dark:text-[#f6fafe] uppercase tracking-widest font-manrope">Utopia Planner</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <button onclick="window.location.href='./study-plan-wizard.html'" class="bg-[#4355b9] text-white px-5 py-2 rounded-lg font-bold scale-95 active:opacity-80 transition-all">과목 추가</button>
+      <button onclick="logoutUser()" class="px-4 py-2 text-sm bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400 transition">로그아웃</button>
+    </div>
+  </div>
+</header>
+
+<main class="pt-24 p-8 min-h-screen">
+  <div class="max-w-[1440px] mx-auto">
+    <div class="mb-12">
+      <div class="flex items-center gap-6">
+        <button id="prev-month" class="p-2 hover:bg-[#f0f4f8] rounded-xl transition-colors text-[#00113a]/60">
+          <span class="material-symbols-outlined text-3xl leading-none">chevron_left</span>
+        </button>
+        <span id="month-year" class="font-manrope tracking-tighter text-4xl font-bold"></span>
+        <button id="next-month" class="p-2 hover:bg-[#f0f4f8] rounded-xl transition-colors text-[#00113a]/60">
+          <span class="material-symbols-outlined text-3xl leading-none">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-8">
+      <div class="col-span-12 lg:col-span-9 bg-white rounded-2xl shadow-sm overflow-hidden border border-[#e4e9ed]">
+        <div class="calendar-grid bg-[#f0f4f8]/50 text-[#00113a]/40 text-xs font-bold uppercase tracking-widest py-3 border-b border-[#e4e9ed]">
+          <div class="text-center">일</div>
+          <div class="text-center">월</div>
+          <div class="text-center">화</div>
+          <div class="text-center">수</div>
+          <div class="text-center">목</div>
+          <div class="text-center">금</div>
+          <div class="text-center">토</div>
+        </div>
+        <div id="calendar-days" class="calendar-grid min-h-[700px]"></div>
+      </div>
+
+      <div class="col-span-12 lg:col-span-3">
+        <div class="bg-white rounded-2xl border border-[#e4e9ed] overflow-hidden flex flex-col h-full min-h-[700px]">
+          <div class="p-5 border-b border-[#e4e9ed] flex items-center justify-between">
+            <h2 class="font-manrope font-bold text-lg">일일 계획</h2>
+            <button onclick="alert('기능 준비 중입니다.')" class="w-8 h-8 rounded-full bg-[#4355b9]/10 text-[#4355b9] flex items-center justify-center hover:bg-[#4355b9]/20 transition-colors">
+              <span class="material-symbols-outlined text-xl">add</span>
+            </button>
+          </div>
+          <div id="daily-plan" class="p-5 flex-1 space-y-4">
+            <div class="text-center py-10 opacity-30">
+              <span class="material-symbols-outlined text-4xl mb-2">event_note</span>
+              <p class="text-sm">오늘의 계획이 없습니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-[#e4e9ed] px-4 py-3 z-50 flex justify-around items-center shadow-[0_-4px_20px_rgba(0,17,58,0.05)]">
+  <a class="flex flex-col items-center gap-1 text-[#00113a]/40" href="./study-plan-wizard.html">
+    <span class="material-symbols-outlined">timer</span>
+    <span class="text-[10px]">Plan</span>
+  </a>
+  <a class="flex flex-col items-center gap-1 text-[#4355b9] font-bold" href="./calendar.html">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+    <span class="text-[10px]">Calendar</span>
+  </a>
+  <a class="flex flex-col items-center gap-1 text-[#00113a]/40" href="./stats.html">
+    <span class="material-symbols-outlined">analytics</span>
+    <span class="text-[10px]">Stats</span>
+  </a>
+  <a class="flex flex-col items-center gap-1 text-[#00113a]/40" href="./profile.html">
+    <span class="material-symbols-outlined">person</span>
+    <span class="text-[10px]">Profile</span>
+  </a>
+</nav>
+
+<script src="../assets/js/main.js"></script>
+<script>
+let currentDate = new Date();
+let calendarData = null;
+let shuffledScheduleMap = new Map();
+
+let prevDays = [];
+let currentDays = [];
+
+document.addEventListener('DOMContentLoaded', async function() {
+  requireLogin();
+
+  await loadCalendarData();
+  renderCalendar();
+
+  document.getElementById('prev-month').addEventListener('click', previousMonth);
+  document.getElementById('next-month').addEventListener('click', nextMonth);
+
+  const consent = localStorage.getItem(GAMEIFY_CONSENT_KEY);
+  if (consent === null) {
+    //const agreed = showGameifyDisclaimer();
+    const agreed = true
+    localStorage.setItem(GAMEIFY_CONSENT_KEY, agreed ? 'true' : 'false');
+  }
+
+  if (isGameifyConsentGranted()) {
+    // 첫 팝업은 빠르게(2~5초), 이후에는 15~20초 랜덤 반복.
+    startEvasivePopupLoopWithQuickFirst(15000, 20000, 2000, 5000);
+  }
+});
+
+window.addEventListener('beforeunload', () => {
+  stopEvasivePopupLoop();
+});
+
+async function loadCalendarData() {
+  try {
+    const response = await getCalendar();
+    calendarData = response.data;
+    buildShuffledScheduleMap();
+  } catch (error) {
+    console.error('캘린더 조회 실패:', error);
+    alert('캘린더 데이터를 불러올 수 없습니다.\n' + (error.message || '알 수 없는 오류'));
+  }
+}
+
+function shuffleArray(list) {
+  const cloned = list.slice();
+  for (let i = cloned.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = cloned[i];
+    cloned[i] = cloned[j];
+    cloned[j] = temp;
+  }
+  return cloned;
+}
+
+// Option C: 새로고침마다 날짜-일정 매핑과 날짜 내 과목 순서를 모두 뒤섞어 표시한다.
+function buildShuffledScheduleMap() {
+  shuffledScheduleMap = new Map();
+
+  const schedules = Array.isArray(calendarData?.schedules) ? calendarData.schedules : [];
+  if (!schedules.length) {
+    return;
+  }
+
+  const normalized = schedules.map(item => ({
+    date: item.date,
+    subjects: Array.isArray(item.subjects)
+      ? item.subjects.map(subject => ({ ...subject }))
+      : []
+  }));
+
+  const subjectGroups = shuffleArray(
+    normalized.map(item => shuffleArray(item.subjects))
+  );
+
+  normalized.forEach((item, index) => {
+    shuffledScheduleMap.set(item.date, {
+      date: item.date,
+      subjects: subjectGroups[index] || []
+    });
+  });
+}
+
+function renderCalendar() {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+  document.getElementById('month-year').textContent = `${year}년 ${monthNames[month]}`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
+  const prevLastDate = new Date(year, month, 0).getDate();
+  prevDays = [];
+  for (let i = firstDay - 1; i >= 0; i--) {
+    prevDays.push(prevLastDate - i);
+  }
+
+  currentDays = [];
+  for (let i = 1; i <= lastDate; i++) {
+    currentDays.push(i);
+  }
+
+  const nextDays = [];
+  const totalCells = prevDays.length + currentDays.length;
+  const remainingCells = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for (let i = 1; i <= remainingCells; i++) {
+    nextDays.push(i);
+  }
+
+  const calendarDaysEl = document.getElementById('calendar-days');
+  calendarDaysEl.innerHTML = '';
+
+  prevDays.forEach((day, index) => {
+    calendarDaysEl.appendChild(createDayCell(day, 'prev', null, index));
+  });
+
+  currentDays.forEach((day, index) => {
+    const dateStr = formatDate(new Date(year, month, day));
+    const scheduleData = findScheduleByDate(dateStr);
+    const cellIndex = prevDays.length + index;
+    calendarDaysEl.appendChild(createDayCell(day, 'current', scheduleData, cellIndex));
+  });
+
+  nextDays.forEach((day, index) => {
+    const cellIndex = prevDays.length + currentDays.length + index;
+    calendarDaysEl.appendChild(createDayCell(day, 'next', null, cellIndex));
+  });
+}
+
+function createDayCell(day, type, scheduleData, cellIndex) {
+  const cell = document.createElement('div');
+  const isCurrent = type === 'current';
+  const isLastColumn = (cellIndex + 1) % 7 === 0;
+
+  let classes = 'p-3 transition-colors group relative flex flex-col items-start gap-1 border-b border-[#e4e9ed]';
+  if (!isLastColumn) {
+    classes += ' border-r border-[#e4e9ed]';
+  }
+
+  if (isCurrent) {
+    classes += ' hover:bg-[#f6fafe]';
+    const today = new Date();
+    if (
+      day === today.getDate() &&
+      currentDate.getMonth() === today.getMonth() &&
+      currentDate.getFullYear() === today.getFullYear()
+    ) {
+      classes += ' bg-blue-50';
+    }
+  } else {
+    classes += ' bg-[#f6fafe]/30';
+  }
+
+  cell.className = classes;
+
+  const dateSpan = document.createElement('span');
+  dateSpan.className = `text-sm font-bold ${isCurrent ? 'opacity-100' : 'opacity-30'} group-hover:opacity-100`;
+  dateSpan.textContent = day;
+  cell.appendChild(dateSpan);
+
+  if (isCurrent && scheduleData && Array.isArray(scheduleData.subjects) && scheduleData.subjects.length > 0) {
+    const subject = scheduleData.subjects[0];
+    const priorityColor = getPriorityColor(subject.priority);
+
+    const subjectEl = document.createElement('div');
+    subjectEl.className = `w-full ${priorityColor} border-l-4 border-[#4355b9] px-2 py-1 mt-1 rounded-sm`;
+    subjectEl.innerHTML = `<p class="text-[10px] font-bold truncate leading-tight">${subject.subject}</p>`;
+    cell.appendChild(subjectEl);
+  }
+
+  return cell;
+}
+
+function findScheduleByDate(dateStr) {
+  if (shuffledScheduleMap.has(dateStr)) {
+    return shuffledScheduleMap.get(dateStr);
+  }
+
+  if (!calendarData || !Array.isArray(calendarData.schedules)) {
+    return null;
+  }
+
+  return calendarData.schedules.find(item => item.date === dateStr) || null;
+}
+
+function previousMonth() {
+  currentDate.setMonth(currentDate.getMonth() - 1);
+  renderCalendar();
+}
+
+function nextMonth() {
+  currentDate.setMonth(currentDate.getMonth() + 1);
+  renderCalendar();
+}
+</script>
+</body>
+</html>
