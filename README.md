@@ -1,6 +1,17 @@
-# Utopia Planner Frontend
+# Utopia Planner
 
-Utopia Planner는 시험 일정과 학습 계획을 관리하기 위한 웹 서비스입니다. 이 저장소는 프론트엔드 프로젝트이며, `Backend_README.md`에 정리된 Spring Boot REST API와 연동하도록 구성되어 있습니다.
+'Utopia Planner'는 사용자에게 데이터 기반의 최적화된 시험 일정을 제안하는 학습 관리 솔루션의 형태를 띠고 있습니다. 하지만 그 이면에는 사용자의 집중력을 교묘하게 무너뜨리는 '안티 패턴(Anti-pattern)' 설계가 숨겨져 있습니다.
+
+새로고침 시마다 변동되는 유동적 스케줄링, 몰입을 방해하는 갑작스러운 미디어 팝업 등을 통해, 철저한 계획조차 쉽게 무너지는 시험 기간의 현실적인 심리적 역설을 웹 환경으로 구현해낸 실험적인 프로젝트입니다.
+
+## 실행해보기
+https://utoplanner.kro.kr/
+
+## 시연 영상 보기
+https://youtu.be/OQuAXaVMm0c
+
+# Utopia_Planner_frontend
+다음은 프론트엔드 프로젝트 소개이며, `Utopia Planner_backend`에 정리된 Spring Boot REST API와 연동하도록 구성되어 있습니다.
 
 ## 프로젝트 개요
 
@@ -11,19 +22,28 @@ Utopia Planner는 시험 일정과 학습 계획을 관리하기 위한 웹 서�
 
 ## 주요 기능
 
-### 1. 메인 페이지
+### 1. 메인(랜딩) 페이지
 - 로그인/회원가입 진입
 - 로그인 상태에 따라 과목 입력 / 캘린더 이동 버튼 노출
+<img alt="image" src="https://github.com/user-attachments/assets/39425643-458b-49c9-a0fa-80232ee667db" width="50%" />
+<img alt="image" src="https://github.com/user-attachments/assets/c43adfbe-1a0f-4c63-a4f9-97cec01d7b9f" width="50%" />
+
+
+
 
 ### 2. 과목 정보 입력 페이지
 - 과목명, 시험 예정일, 난이도, 이해도 입력
 - 여러 과목을 한 번에 단계적으로 추가 가능
 - `POST /api/v1/exams` 호출로 시험 일정 생성
+ <img alt="image" src="https://github.com/user-attachments/assets/1c059d39-5e46-4405-86ae-784363bb7db1" width="50%" />
+
 
 ### 3. 캘린더 페이지
 - 사용자별 학습 일정 조회 및 월간 캘린더 렌더링
 - 캘린더 데이터는 백엔드 응답을 기반으로 동적 표시
 - 로그인 사용자 기준으로 동작
+ <img alt="image" src="https://github.com/user-attachments/assets/a578c43c-b740-4f30-8f39-3acfa6ec263c" width="50%" />
+
 
 ### 4. 프로필 / 통계 페이지
 - 시험 과목 수, 평균 난이도, 최근 시험 목록 표시
@@ -32,6 +52,11 @@ Utopia Planner는 시험 일정과 학습 계획을 관리하기 위한 웹 서�
 ### 5. 부가 인터랙션
 - 캘린더 페이지에 실험적인 게임화 팝업 포함
 - 팝업 동의 여부는 `localStorage`에 저장
+
+  <img alt="image" src="https://github.com/user-attachments/assets/dc06670b-8708-495f-b524-8e9bd6c75f97" width="50%" />
+  <img alt="image" src="https://github.com/user-attachments/assets/d002ee67-b4f6-45b5-9bda-9a9adff90663" width="50%" />
+
+
 
 ## 폴더 구조
 
@@ -108,7 +133,7 @@ http://localhost:8080/api/v1
 - 나머지 API는 JWT 인증 필요
 - 프론트엔드는 로그인 성공 시 받은 토큰을 `localStorage`에 저장하고, 이후 요청의 `Authorization: Bearer {token}` 헤더에 포함합니다.
 
-상세한 응답 포맷과 서버 규칙은 `Backend_README.md`를 참고하세요.
+상세한 응답 포맷과 서버 규칙은 `# animal_league_backend`를 참고하세요.
 
 ## 참고 사항
 
@@ -116,9 +141,9 @@ http://localhost:8080/api/v1
 - `components/` 폴더는 현재 재사용 컴포넌트 보관용으로 남아 있습니다.
 - `README.md`는 프론트 실행 및 백엔드 연결 방법을 빠르게 이해하기 위한 문서입니다.
 
-# animal_league
+# Utopia_Planner_backend
 
-동물 리그 학습/일정 관리를 위한 Spring Boot REST API 프로젝트입니다.
+학습/일정 관리를 위한 Spring Boot REST API 프로젝트입니다.
 
 ## 1. 프로젝트 소개
 
